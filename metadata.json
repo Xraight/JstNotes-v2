@@ -1,0 +1,6 @@
+{
+  "name": "Cognito IDE - Study & Notes Workstation",
+  "description": "IDE-style note-taking workstation with live markdown & LaTeX, PDF bidirectional integration, SM-2 spaced repetition, AI study tools, and interactive D3 knowledge graph.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

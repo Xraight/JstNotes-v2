@@ -1,0 +1,470 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Source+Code+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+/* Base theme custom properties */
+:root {
+  --app-font-family: 'JetBrains Mono', monospace;
+  --app-font-size: 14px;
+}
+
+/* ==========================================================================
+   THEME 1: DRACULA
+   Deep purple/violet background, pink/cyan accents, soft pastel text
+   ========================================================================== */
+[data-theme='dracula'] {
+  color-scheme: dark;
+}
+[data-theme='dracula'] .bg-slate-950 {
+  background-color: #1e1f29 !important;
+}
+[data-theme='dracula'] .bg-slate-900 {
+  background-color: #282a36 !important;
+}
+[data-theme='dracula'] .bg-slate-900\/90 {
+  background-color: rgba(40, 42, 54, 0.92) !important;
+}
+[data-theme='dracula'] .bg-slate-950\/60 {
+  background-color: rgba(30, 31, 41, 0.6) !important;
+}
+[data-theme='dracula'] .bg-slate-950\/40 {
+  background-color: rgba(30, 31, 41, 0.4) !important;
+}
+[data-theme='dracula'] .bg-slate-800 {
+  background-color: #383a59 !important;
+}
+[data-theme='dracula'] .bg-slate-800\/80 {
+  background-color: rgba(56, 58, 89, 0.8) !important;
+}
+[data-theme='dracula'] .bg-slate-800\/50 {
+  background-color: rgba(56, 58, 89, 0.5) !important;
+}
+[data-theme='dracula'] .hover\:bg-slate-800:hover {
+  background-color: #44475a !important;
+}
+[data-theme='dracula'] .hover\:bg-slate-700:hover {
+  background-color: #50536c !important;
+}
+[data-theme='dracula'] .border-slate-800,
+[data-theme='dracula'] .border-slate-800\/80 {
+  border-color: #44475a !important;
+}
+[data-theme='dracula'] .border-slate-700 {
+  border-color: #6272a4 !important;
+}
+[data-theme='dracula'] .border-slate-900 {
+  border-color: #21222c !important;
+}
+[data-theme='dracula'] .text-slate-100,
+[data-theme='dracula'] .text-slate-200 {
+  color: #f8f8f2 !important;
+}
+[data-theme='dracula'] .text-slate-300 {
+  color: #e2e2dc !important;
+}
+[data-theme='dracula'] .text-slate-400 {
+  color: #9baec8 !important;
+}
+[data-theme='dracula'] .text-slate-500,
+[data-theme='dracula'] .text-slate-600 {
+  color: #6272a4 !important;
+}
+[data-theme='dracula'] .text-amber-400,
+[data-theme='dracula'] .text-amber-300 {
+  color: #ff79c6 !important;
+}
+[data-theme='dracula'] .text-amber-500 {
+  color: #bd93f9 !important;
+}
+[data-theme='dracula'] .bg-amber-500 {
+  background-color: #bd93f9 !important;
+  color: #1e1f29 !important;
+}
+[data-theme='dracula'] .hover\:bg-amber-600:hover {
+  background-color: #a772f7 !important;
+}
+[data-theme='dracula'] .bg-amber-500\/10,
+[data-theme='dracula'] .bg-amber-500\/15,
+[data-theme='dracula'] .bg-amber-500\/20 {
+  background-color: rgba(189, 147, 249, 0.18) !important;
+  color: #f8f8f2 !important;
+}
+[data-theme='dracula'] .border-amber-500,
+[data-theme='dracula'] .border-amber-500\/30,
+[data-theme='dracula'] .border-amber-500\/40 {
+  border-color: rgba(189, 147, 249, 0.4) !important;
+}
+
+/* ==========================================================================
+   THEME 2: NORD
+   Polar night arctic theme with cool slate tones and frost ice accents
+   ========================================================================== */
+[data-theme='nord'] {
+  color-scheme: dark;
+}
+[data-theme='nord'] .bg-slate-950 {
+  background-color: #242933 !important;
+}
+[data-theme='nord'] .bg-slate-900 {
+  background-color: #2e3440 !important;
+}
+[data-theme='nord'] .bg-slate-900\/90 {
+  background-color: rgba(46, 52, 64, 0.92) !important;
+}
+[data-theme='nord'] .bg-slate-950\/60 {
+  background-color: rgba(36, 41, 51, 0.6) !important;
+}
+[data-theme='nord'] .bg-slate-950\/40 {
+  background-color: rgba(36, 41, 51, 0.4) !important;
+}
+[data-theme='nord'] .bg-slate-800 {
+  background-color: #3b4252 !important;
+}
+[data-theme='nord'] .bg-slate-800\/80 {
+  background-color: rgba(59, 66, 82, 0.8) !important;
+}
+[data-theme='nord'] .bg-slate-800\/50 {
+  background-color: rgba(59, 66, 82, 0.5) !important;
+}
+[data-theme='nord'] .hover\:bg-slate-800:hover {
+  background-color: #434c5e !important;
+}
+[data-theme='nord'] .hover\:bg-slate-700:hover {
+  background-color: #4c566a !important;
+}
+[data-theme='nord'] .border-slate-800,
+[data-theme='nord'] .border-slate-800\/80 {
+  border-color: #434c5e !important;
+}
+[data-theme='nord'] .border-slate-700 {
+  border-color: #4c566a !important;
+}
+[data-theme='nord'] .border-slate-900 {
+  border-color: #20242d !important;
+}
+[data-theme='nord'] .text-slate-100,
+[data-theme='nord'] .text-slate-200 {
+  color: #eceff4 !important;
+}
+[data-theme='nord'] .text-slate-300 {
+  color: #e5e9f0 !important;
+}
+[data-theme='nord'] .text-slate-400 {
+  color: #d8dee9 !important;
+}
+[data-theme='nord'] .text-slate-500,
+[data-theme='nord'] .text-slate-600 {
+  color: #81a1c1 !important;
+}
+[data-theme='nord'] .text-amber-400,
+[data-theme='nord'] .text-amber-300 {
+  color: #88c0d0 !important;
+}
+[data-theme='nord'] .text-amber-500 {
+  color: #81a1c1 !important;
+}
+[data-theme='nord'] .bg-amber-500 {
+  background-color: #88c0d0 !important;
+  color: #242933 !important;
+}
+[data-theme='nord'] .hover\:bg-amber-600:hover {
+  background-color: #77b0c0 !important;
+}
+[data-theme='nord'] .bg-amber-500\/10,
+[data-theme='nord'] .bg-amber-500\/15,
+[data-theme='nord'] .bg-amber-500\/20 {
+  background-color: rgba(136, 192, 208, 0.18) !important;
+  color: #eceff4 !important;
+}
+[data-theme='nord'] .border-amber-500,
+[data-theme='nord'] .border-amber-500\/30,
+[data-theme='nord'] .border-amber-500\/40 {
+  border-color: rgba(136, 192, 208, 0.4) !important;
+}
+
+/* ==========================================================================
+   THEME 3: CATPPUCCIN (Mocha)
+   Warm comforting dark palette with peach, lavender, and soft mauve
+   ========================================================================== */
+[data-theme='catppuccin'] {
+  color-scheme: dark;
+}
+[data-theme='catppuccin'] .bg-slate-950 {
+  background-color: #181825 !important;
+}
+[data-theme='catppuccin'] .bg-slate-900 {
+  background-color: #1e1e2e !important;
+}
+[data-theme='catppuccin'] .bg-slate-900\/90 {
+  background-color: rgba(30, 30, 46, 0.92) !important;
+}
+[data-theme='catppuccin'] .bg-slate-950\/60 {
+  background-color: rgba(24, 24, 37, 0.6) !important;
+}
+[data-theme='catppuccin'] .bg-slate-950\/40 {
+  background-color: rgba(24, 24, 37, 0.4) !important;
+}
+[data-theme='catppuccin'] .bg-slate-800 {
+  background-color: #313244 !important;
+}
+[data-theme='catppuccin'] .bg-slate-800\/80 {
+  background-color: rgba(49, 50, 68, 0.8) !important;
+}
+[data-theme='catppuccin'] .bg-slate-800\/50 {
+  background-color: rgba(49, 50, 68, 0.5) !important;
+}
+[data-theme='catppuccin'] .hover\:bg-slate-800:hover {
+  background-color: #45475a !important;
+}
+[data-theme='catppuccin'] .hover\:bg-slate-700:hover {
+  background-color: #585b70 !important;
+}
+[data-theme='catppuccin'] .border-slate-800,
+[data-theme='catppuccin'] .border-slate-800\/80 {
+  border-color: #45475a !important;
+}
+[data-theme='catppuccin'] .border-slate-700 {
+  border-color: #585b70 !important;
+}
+[data-theme='catppuccin'] .border-slate-900 {
+  border-color: #11111b !important;
+}
+[data-theme='catppuccin'] .text-slate-100,
+[data-theme='catppuccin'] .text-slate-200 {
+  color: #cdd6f4 !important;
+}
+[data-theme='catppuccin'] .text-slate-300 {
+  color: #bac2de !important;
+}
+[data-theme='catppuccin'] .text-slate-400 {
+  color: #a6adc8 !important;
+}
+[data-theme='catppuccin'] .text-slate-500,
+[data-theme='catppuccin'] .text-slate-600 {
+  color: #6c7086 !important;
+}
+[data-theme='catppuccin'] .text-amber-400,
+[data-theme='catppuccin'] .text-amber-300 {
+  color: #fab387 !important;
+}
+[data-theme='catppuccin'] .text-amber-500 {
+  color: #f9e2af !important;
+}
+[data-theme='catppuccin'] .bg-amber-500 {
+  background-color: #fab387 !important;
+  color: #181825 !important;
+}
+[data-theme='catppuccin'] .hover\:bg-amber-600:hover {
+  background-color: #ea996c !important;
+}
+[data-theme='catppuccin'] .bg-amber-500\/10,
+[data-theme='catppuccin'] .bg-amber-500\/15,
+[data-theme='catppuccin'] .bg-amber-500\/20 {
+  background-color: rgba(250, 179, 135, 0.18) !important;
+  color: #cdd6f4 !important;
+}
+[data-theme='catppuccin'] .border-amber-500,
+[data-theme='catppuccin'] .border-amber-500\/30,
+[data-theme='catppuccin'] .border-amber-500\/40 {
+  border-color: rgba(250, 179, 135, 0.4) !important;
+}
+
+/* ==========================================================================
+   THEME 4: MONOKAI
+   Rich dark olive/charcoal with vibrant yellow, lime green, and neon accents
+   ========================================================================== */
+[data-theme='monokai'] {
+  color-scheme: dark;
+}
+[data-theme='monokai'] .bg-slate-950 {
+  background-color: #1e1f1c !important;
+}
+[data-theme='monokai'] .bg-slate-900 {
+  background-color: #272822 !important;
+}
+[data-theme='monokai'] .bg-slate-900\/90 {
+  background-color: rgba(39, 40, 34, 0.92) !important;
+}
+[data-theme='monokai'] .bg-slate-950\/60 {
+  background-color: rgba(30, 31, 28, 0.6) !important;
+}
+[data-theme='monokai'] .bg-slate-950\/40 {
+  background-color: rgba(30, 31, 28, 0.4) !important;
+}
+[data-theme='monokai'] .bg-slate-800 {
+  background-color: #383830 !important;
+}
+[data-theme='monokai'] .bg-slate-800\/80 {
+  background-color: rgba(56, 56, 48, 0.8) !important;
+}
+[data-theme='monokai'] .bg-slate-800\/50 {
+  background-color: rgba(56, 56, 48, 0.5) !important;
+}
+[data-theme='monokai'] .hover\:bg-slate-800:hover {
+  background-color: #49483e !important;
+}
+[data-theme='monokai'] .hover\:bg-slate-700:hover {
+  background-color: #5a594d !important;
+}
+[data-theme='monokai'] .border-slate-800,
+[data-theme='monokai'] .border-slate-800\/80 {
+  border-color: #49483e !important;
+}
+[data-theme='monokai'] .border-slate-700 {
+  border-color: #75715e !important;
+}
+[data-theme='monokai'] .border-slate-900 {
+  border-color: #141412 !important;
+}
+[data-theme='monokai'] .text-slate-100,
+[data-theme='monokai'] .text-slate-200 {
+  color: #f8f8f2 !important;
+}
+[data-theme='monokai'] .text-slate-300 {
+  color: #e6db74 !important;
+}
+[data-theme='monokai'] .text-slate-400 {
+  color: #a59f85 !important;
+}
+[data-theme='monokai'] .text-slate-500,
+[data-theme='monokai'] .text-slate-600 {
+  color: #75715e !important;
+}
+[data-theme='monokai'] .text-amber-400,
+[data-theme='monokai'] .text-amber-300 {
+  color: #a6e22e !important;
+}
+[data-theme='monokai'] .text-amber-500 {
+  color: #e6db74 !important;
+}
+[data-theme='monokai'] .bg-amber-500 {
+  background-color: #a6e22e !important;
+  color: #1e1f1c !important;
+}
+[data-theme='monokai'] .hover\:bg-amber-600:hover {
+  background-color: #92cc26 !important;
+}
+[data-theme='monokai'] .bg-amber-500\/10,
+[data-theme='monokai'] .bg-amber-500\/15,
+[data-theme='monokai'] .bg-amber-500\/20 {
+  background-color: rgba(166, 226, 46, 0.18) !important;
+  color: #f8f8f2 !important;
+}
+[data-theme='monokai'] .border-amber-500,
+[data-theme='monokai'] .border-amber-500\/30,
+[data-theme='monokai'] .border-amber-500\/40 {
+  border-color: rgba(166, 226, 46, 0.4) !important;
+}
+
+/* ==========================================================================
+   THEME 5: SOLARIZED LIGHT
+   Warm daylight ivory/cream reading palette with refined contrast
+   ========================================================================== */
+[data-theme='solarized-light'] {
+  color-scheme: light;
+}
+[data-theme='solarized-light'] .bg-slate-950 {
+  background-color: #fdf6e3 !important;
+}
+[data-theme='solarized-light'] .bg-slate-900 {
+  background-color: #eee8d5 !important;
+}
+[data-theme='solarized-light'] .bg-slate-900\/90 {
+  background-color: rgba(238, 232, 213, 0.94) !important;
+}
+[data-theme='solarized-light'] .bg-slate-950\/60 {
+  background-color: rgba(253, 246, 227, 0.7) !important;
+}
+[data-theme='solarized-light'] .bg-slate-950\/40 {
+  background-color: rgba(253, 246, 227, 0.5) !important;
+}
+[data-theme='solarized-light'] .bg-slate-800 {
+  background-color: #e0d7be !important;
+}
+[data-theme='solarized-light'] .bg-slate-800\/80 {
+  background-color: rgba(224, 215, 190, 0.85) !important;
+}
+[data-theme='solarized-light'] .bg-slate-800\/50 {
+  background-color: rgba(224, 215, 190, 0.5) !important;
+}
+[data-theme='solarized-light'] .hover\:bg-slate-800:hover {
+  background-color: #d6ccb2 !important;
+}
+[data-theme='solarized-light'] .hover\:bg-slate-700:hover {
+  background-color: #c9bf9f !important;
+}
+[data-theme='solarized-light'] .border-slate-800,
+[data-theme='solarized-light'] .border-slate-800\/80 {
+  border-color: #d3cbaf !important;
+}
+[data-theme='solarized-light'] .border-slate-700 {
+  border-color: #b7ad8f !important;
+}
+[data-theme='solarized-light'] .border-slate-900 {
+  border-color: #e2dbbf !important;
+}
+[data-theme='solarized-light'] .text-slate-100,
+[data-theme='solarized-light'] .text-slate-200 {
+  color: #073642 !important;
+}
+[data-theme='solarized-light'] .text-slate-300 {
+  color: #586e75 !important;
+}
+[data-theme='solarized-light'] .text-slate-400 {
+  color: #657b83 !important;
+}
+[data-theme='solarized-light'] .text-slate-500,
+[data-theme='solarized-light'] .text-slate-600 {
+  color: #839496 !important;
+}
+[data-theme='solarized-light'] .text-amber-400,
+[data-theme='solarized-light'] .text-amber-300 {
+  color: #b58900 !important;
+}
+[data-theme='solarized-light'] .text-amber-500 {
+  color: #cb4b16 !important;
+}
+[data-theme='solarized-light'] .bg-amber-500 {
+  background-color: #b58900 !important;
+  color: #fdf6e3 !important;
+}
+[data-theme='solarized-light'] .hover\:bg-amber-600:hover {
+  background-color: #9d7700 !important;
+}
+[data-theme='solarized-light'] .bg-amber-500\/10,
+[data-theme='solarized-light'] .bg-amber-500\/15,
+[data-theme='solarized-light'] .bg-amber-500\/20 {
+  background-color: rgba(181, 137, 0, 0.18) !important;
+  color: #073642 !important;
+}
+[data-theme='solarized-light'] .border-amber-500,
+[data-theme='solarized-light'] .border-amber-500\/30,
+[data-theme='solarized-light'] .border-amber-500\/40 {
+  border-color: rgba(181, 137, 0, 0.45) !important;
+}
+[data-theme='solarized-light'] input,
+[data-theme='solarized-light'] textarea {
+  color: #073642 !important;
+}
+
+/* ==========================================================================
+   DYNAMIC TYPOGRAPHY ENGINE
+   ========================================================================== */
+.app-font-custom,
+.app-font-custom input:not([type="checkbox"]):not([type="radio"]),
+.app-font-custom textarea,
+.app-font-custom select,
+.app-font-custom #editor-textarea,
+.app-font-custom #editor-note-title,
+.app-font-custom #editor-preview-pane,
+.app-font-custom #editor-preview-pane p,
+.app-font-custom #editor-preview-pane h1,
+.app-font-custom #editor-preview-pane h2,
+.app-font-custom #editor-preview-pane h3,
+.app-font-custom #editor-preview-pane h4,
+.app-font-custom #editor-preview-pane li,
+.app-font-custom #editor-preview-pane blockquote,
+.app-font-custom #editor-preview-pane div:not([class*="katex"]):not([class*="lucide"]):not(.katex-html),
+.app-font-custom #editor-preview-pane span:not([class*="katex"]):not(.katex-html):not(.base) {
+  font-family: var(--app-font-family) !important;
+}
+
