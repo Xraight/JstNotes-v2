@@ -76,6 +76,35 @@ export const FlashcardSession: React.FC<FlashcardSessionProps> = ({
     setCompleted(false);
   };
 
+  // Keyboard navigation shortcuts: Space to flip, 1-5 to rate SM-2
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+
+      if (completed) {
+        if (e.key === 'Enter') handleResetSession();
+        if (e.key === 'Escape') onBack();
+        return;
+      }
+
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        setIsFlipped((prev) => !prev);
+      } else if (isFlipped) {
+        if (e.key === '1') handleRating(SM2Rating.AGAIN);
+        else if (e.key === '2') handleRating(SM2Rating.HARD);
+        else if (e.key === '3') handleRating(SM2Rating.GOOD);
+        else if (e.key === '4') handleRating(SM2Rating.EASY);
+        else if (e.key === '5') handleRating(SM2Rating.MASTERED);
+      } else if (e.key === 'Escape') {
+        onBack();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [completed, isFlipped, currentCard, currentIndex, cards.length]);
+
   if (!cards || cards.length === 0) {
     return (
       <div className="h-full flex flex-col items-center justify-center bg-slate-950 text-slate-300 p-8 text-center">

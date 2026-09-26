@@ -1,7 +1,9 @@
 {
-  "name": "react-example",
+  "name": "jstnotes-v2",
+  "version": "1.0.0-beta.1",
+  "description": "Cognito IDE / JstNotes - Technical note-taking workstation with Markdown, LaTeX, PDF integration, SM-2 flashcards, and D3 knowledge graph",
   "private": true,
-  "version": "0.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
@@ -9,7 +11,9 @@
     "start": "node dist/server.cjs",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && npm run build"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

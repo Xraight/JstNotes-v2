@@ -357,7 +357,7 @@
 
 /* ==========================================================================
    THEME 5: SOLARIZED LIGHT
-   Warm daylight ivory/cream reading palette with refined contrast
+   Warm daylight ivory/cream reading palette with refined high contrast
    ========================================================================== */
 [data-theme='solarized-light'] {
   color-scheme: light;
@@ -365,34 +365,52 @@
 [data-theme='solarized-light'] .bg-slate-950 {
   background-color: #fdf6e3 !important;
 }
+[data-theme='solarized-light'] .bg-slate-950\/20,
+[data-theme='solarized-light'] .bg-slate-950\/30,
+[data-theme='solarized-light'] .bg-slate-950\/40,
+[data-theme='solarized-light'] .bg-slate-950\/50,
+[data-theme='solarized-light'] .bg-slate-950\/60,
+[data-theme='solarized-light'] .bg-slate-950\/70,
+[data-theme='solarized-light'] .bg-slate-950\/80 {
+  background-color: rgba(238, 232, 213, 0.6) !important;
+}
 [data-theme='solarized-light'] .bg-slate-900 {
   background-color: #eee8d5 !important;
 }
-[data-theme='solarized-light'] .bg-slate-900\/90 {
-  background-color: rgba(238, 232, 213, 0.94) !important;
-}
-[data-theme='solarized-light'] .bg-slate-950\/60 {
-  background-color: rgba(253, 246, 227, 0.7) !important;
-}
-[data-theme='solarized-light'] .bg-slate-950\/40 {
-  background-color: rgba(253, 246, 227, 0.5) !important;
+[data-theme='solarized-light'] .bg-slate-900\/40,
+[data-theme='solarized-light'] .bg-slate-900\/50,
+[data-theme='solarized-light'] .bg-slate-900\/60,
+[data-theme='solarized-light'] .bg-slate-900\/70,
+[data-theme='solarized-light'] .bg-slate-900\/80,
+[data-theme='solarized-light'] .bg-slate-900\/90,
+[data-theme='solarized-light'] .bg-slate-900\/95 {
+  background-color: #eee8d5 !important;
 }
 [data-theme='solarized-light'] .bg-slate-800 {
   background-color: #e0d7be !important;
 }
-[data-theme='solarized-light'] .bg-slate-800\/80 {
-  background-color: rgba(224, 215, 190, 0.85) !important;
+[data-theme='solarized-light'] .bg-slate-800\/40,
+[data-theme='solarized-light'] .bg-slate-800\/50,
+[data-theme='solarized-light'] .bg-slate-800\/60,
+[data-theme='solarized-light'] .bg-slate-800\/70,
+[data-theme='solarized-light'] .bg-slate-800\/80,
+[data-theme='solarized-light'] .bg-slate-800\/90 {
+  background-color: #e4dcbe !important;
 }
-[data-theme='solarized-light'] .bg-slate-800\/50 {
-  background-color: rgba(224, 215, 190, 0.5) !important;
-}
-[data-theme='solarized-light'] .hover\:bg-slate-800:hover {
+[data-theme='solarized-light'] .hover\:bg-slate-800:hover,
+[data-theme='solarized-light'] .hover\:bg-slate-800\/70:hover,
+[data-theme='solarized-light'] .hover\:bg-slate-800\/80:hover {
   background-color: #d6ccb2 !important;
+}
+[data-theme='solarized-light'] .hover\:bg-slate-900:hover {
+  background-color: #e4dcbe !important;
 }
 [data-theme='solarized-light'] .hover\:bg-slate-700:hover {
   background-color: #c9bf9f !important;
 }
 [data-theme='solarized-light'] .border-slate-800,
+[data-theme='solarized-light'] .border-slate-800\/40,
+[data-theme='solarized-light'] .border-slate-800\/60,
 [data-theme='solarized-light'] .border-slate-800\/80 {
   border-color: #d3cbaf !important;
 }
@@ -407,21 +425,62 @@
   color: #073642 !important;
 }
 [data-theme='solarized-light'] .text-slate-300 {
-  color: #586e75 !important;
+  color: #394b50 !important;
 }
 [data-theme='solarized-light'] .text-slate-400 {
+  color: #586e75 !important;
+}
+[data-theme='solarized-light'] .text-slate-500 {
   color: #657b83 !important;
 }
-[data-theme='solarized-light'] .text-slate-500,
 [data-theme='solarized-light'] .text-slate-600 {
   color: #839496 !important;
 }
-[data-theme='solarized-light'] .text-amber-400,
-[data-theme='solarized-light'] .text-amber-300 {
-  color: #b58900 !important;
+
+/* Solarized Rose / Crimson accents (fixes unreadable pink cards and text) */
+[data-theme='solarized-light'] .text-rose-100,
+[data-theme='solarized-light'] .text-rose-200,
+[data-theme='solarized-light'] .text-rose-300 {
+  color: #9f1239 !important;
+}
+[data-theme='solarized-light'] .text-rose-400 {
+  color: #be123c !important;
+}
+[data-theme='solarized-light'] .text-rose-500 {
+  color: #dc2626 !important;
+}
+[data-theme='solarized-light'] .hover\:text-rose-300:hover,
+[data-theme='solarized-light'] .hover\:text-rose-400:hover {
+  color: #881337 !important;
+}
+[data-theme='solarized-light'] .bg-rose-500\/10,
+[data-theme='solarized-light'] .bg-rose-500\/15,
+[data-theme='solarized-light'] .bg-rose-500\/20,
+[data-theme='solarized-light'] .bg-rose-500\/25 {
+  background-color: rgba(225, 29, 72, 0.12) !important;
+}
+[data-theme='solarized-light'] .hover\:bg-rose-500\/25:hover {
+  background-color: rgba(225, 29, 72, 0.22) !important;
+}
+[data-theme='solarized-light'] .border-rose-500\/30,
+[data-theme='solarized-light'] .border-rose-500\/40 {
+  border-color: rgba(225, 29, 72, 0.38) !important;
+}
+[data-theme='solarized-light'] .from-rose-950\/40 {
+  --tw-gradient-from: rgba(225, 29, 72, 0.12) !important;
+}
+[data-theme='solarized-light'] .to-amber-950\/20 {
+  --tw-gradient-to: rgba(181, 137, 0, 0.12) !important;
+}
+
+/* Solarized Gold / Amber accents */
+[data-theme='solarized-light'] .text-amber-200,
+[data-theme='solarized-light'] .text-amber-300,
+[data-theme='solarized-light'] .text-amber-400 {
+  color: #b45309 !important;
 }
 [data-theme='solarized-light'] .text-amber-500 {
-  color: #cb4b16 !important;
+  color: #92400e !important;
 }
 [data-theme='solarized-light'] .bg-amber-500 {
   background-color: #b58900 !important;
@@ -433,17 +492,258 @@
 [data-theme='solarized-light'] .bg-amber-500\/10,
 [data-theme='solarized-light'] .bg-amber-500\/15,
 [data-theme='solarized-light'] .bg-amber-500\/20 {
-  background-color: rgba(181, 137, 0, 0.18) !important;
+  background-color: rgba(180, 83, 9, 0.12) !important;
   color: #073642 !important;
 }
 [data-theme='solarized-light'] .border-amber-500,
+[data-theme='solarized-light'] .border-amber-500\/20,
 [data-theme='solarized-light'] .border-amber-500\/30,
 [data-theme='solarized-light'] .border-amber-500\/40 {
-  border-color: rgba(181, 137, 0, 0.45) !important;
+  border-color: rgba(180, 83, 9, 0.35) !important;
 }
+
+/* Solarized Cyan & Blue accents */
+[data-theme='solarized-light'] .text-cyan-200,
+[data-theme='solarized-light'] .text-cyan-300 {
+  color: #0e7490 !important;
+}
+[data-theme='solarized-light'] .text-cyan-400 {
+  color: #0891b2 !important;
+}
+[data-theme='solarized-light'] .bg-cyan-500\/10,
+[data-theme='solarized-light'] .bg-cyan-500\/15,
+[data-theme='solarized-light'] .bg-cyan-500\/20,
+[data-theme='solarized-light'] .bg-cyan-500\/25 {
+  background-color: rgba(14, 116, 144, 0.12) !important;
+}
+[data-theme='solarized-light'] .border-cyan-500\/25,
+[data-theme='solarized-light'] .border-cyan-500\/30,
+[data-theme='solarized-light'] .border-cyan-500\/40 {
+  border-color: rgba(14, 116, 144, 0.35) !important;
+}
+
+/* Solarized Violet accents */
+[data-theme='solarized-light'] .text-violet-200,
+[data-theme='solarized-light'] .text-violet-300 {
+  color: #6d28d9 !important;
+}
+[data-theme='solarized-light'] .text-violet-400 {
+  color: #7c3aed !important;
+}
+[data-theme='solarized-light'] .bg-violet-500\/10,
+[data-theme='solarized-light'] .bg-violet-500\/15,
+[data-theme='solarized-light'] .bg-violet-500\/20 {
+  background-color: rgba(109, 40, 217, 0.12) !important;
+}
+[data-theme='solarized-light'] .border-violet-500\/25,
+[data-theme='solarized-light'] .border-violet-500\/30,
+[data-theme='solarized-light'] .border-violet-500\/40 {
+  border-color: rgba(109, 40, 217, 0.35) !important;
+}
+
+/* Solarized Emerald accents */
+[data-theme='solarized-light'] .text-emerald-200,
+[data-theme='solarized-light'] .text-emerald-300 {
+  color: #047857 !important;
+}
+[data-theme='solarized-light'] .text-emerald-400 {
+  color: #059669 !important;
+}
+[data-theme='solarized-light'] .bg-emerald-500\/10,
+[data-theme='solarized-light'] .bg-emerald-500\/15,
+[data-theme='solarized-light'] .bg-emerald-500\/20 {
+  background-color: rgba(4, 120, 87, 0.12) !important;
+}
+[data-theme='solarized-light'] .border-emerald-500\/25,
+[data-theme='solarized-light'] .border-emerald-500\/30,
+[data-theme='solarized-light'] .border-emerald-500\/40 {
+  border-color: rgba(4, 120, 87, 0.35) !important;
+}
+
+/* Solarized Form Controls & SVG */
 [data-theme='solarized-light'] input,
-[data-theme='solarized-light'] textarea {
+[data-theme='solarized-light'] textarea,
+[data-theme='solarized-light'] select {
   color: #073642 !important;
+  background-color: #fdf6e3;
+  border-color: #b7ad8f;
+}
+[data-theme='solarized-light'] input::placeholder,
+[data-theme='solarized-light'] textarea::placeholder {
+  color: #839496 !important;
+}
+[data-theme='solarized-light'] svg text {
+  fill: #073642 !important;
+}
+
+/* ==========================================================================
+   THEME 6: NORD SNOW (CLEAN LIGHT)
+   Crisp arctic daylight paper with frosty blue accents and pure contrast
+   ========================================================================== */
+[data-theme='nord-light'] {
+  color-scheme: light;
+}
+[data-theme='nord-light'] .bg-slate-950 {
+  background-color: #f8fafc !important;
+}
+[data-theme='nord-light'] .bg-slate-950\/20,
+[data-theme='nord-light'] .bg-slate-950\/30,
+[data-theme='nord-light'] .bg-slate-950\/40,
+[data-theme='nord-light'] .bg-slate-950\/50,
+[data-theme='nord-light'] .bg-slate-950\/60,
+[data-theme='nord-light'] .bg-slate-950\/70,
+[data-theme='nord-light'] .bg-slate-950\/80 {
+  background-color: rgba(241, 245, 249, 0.7) !important;
+}
+[data-theme='nord-light'] .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+[data-theme='nord-light'] .bg-slate-900\/40,
+[data-theme='nord-light'] .bg-slate-900\/50,
+[data-theme='nord-light'] .bg-slate-900\/60,
+[data-theme='nord-light'] .bg-slate-900\/70,
+[data-theme='nord-light'] .bg-slate-900\/80,
+[data-theme='nord-light'] .bg-slate-900\/90,
+[data-theme='nord-light'] .bg-slate-900\/95 {
+  background-color: #ffffff !important;
+}
+[data-theme='nord-light'] .bg-slate-800 {
+  background-color: #f1f5f9 !important;
+}
+[data-theme='nord-light'] .bg-slate-800\/40,
+[data-theme='nord-light'] .bg-slate-800\/50,
+[data-theme='nord-light'] .bg-slate-800\/60,
+[data-theme='nord-light'] .bg-slate-800\/70,
+[data-theme='nord-light'] .bg-slate-800\/80,
+[data-theme='nord-light'] .bg-slate-800\/90 {
+  background-color: #e2e8f0 !important;
+}
+[data-theme='nord-light'] .hover\:bg-slate-800:hover,
+[data-theme='nord-light'] .hover\:bg-slate-800\/70:hover,
+[data-theme='nord-light'] .hover\:bg-slate-800\/80:hover {
+  background-color: #e2e8f0 !important;
+}
+[data-theme='nord-light'] .hover\:bg-slate-900:hover {
+  background-color: #f1f5f9 !important;
+}
+[data-theme='nord-light'] .hover\:bg-slate-700:hover {
+  background-color: #cbd5e1 !important;
+}
+[data-theme='nord-light'] .border-slate-800,
+[data-theme='nord-light'] .border-slate-800\/40,
+[data-theme='nord-light'] .border-slate-800\/60,
+[data-theme='nord-light'] .border-slate-800\/80 {
+  border-color: #e2e8f0 !important;
+}
+[data-theme='nord-light'] .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+[data-theme='nord-light'] .border-slate-900 {
+  border-color: #e2e8f0 !important;
+}
+[data-theme='nord-light'] .text-slate-100,
+[data-theme='nord-light'] .text-slate-200 {
+  color: #0f172a !important;
+}
+[data-theme='nord-light'] .text-slate-300 {
+  color: #334155 !important;
+}
+[data-theme='nord-light'] .text-slate-400 {
+  color: #475569 !important;
+}
+[data-theme='nord-light'] .text-slate-500 {
+  color: #64748b !important;
+}
+[data-theme='nord-light'] .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+/* Nord Light Rose / Red accents */
+[data-theme='nord-light'] .text-rose-100,
+[data-theme='nord-light'] .text-rose-200,
+[data-theme='nord-light'] .text-rose-300 {
+  color: #be123c !important;
+}
+[data-theme='nord-light'] .text-rose-400 {
+  color: #e11d48 !important;
+}
+[data-theme='nord-light'] .text-rose-500 {
+  color: #e11d48 !important;
+}
+[data-theme='nord-light'] .bg-rose-500\/10,
+[data-theme='nord-light'] .bg-rose-500\/15,
+[data-theme='nord-light'] .bg-rose-500\/20,
+[data-theme='nord-light'] .bg-rose-500\/25 {
+  background-color: rgba(225, 29, 72, 0.08) !important;
+}
+[data-theme='nord-light'] .border-rose-500\/30,
+[data-theme='nord-light'] .border-rose-500\/40 {
+  border-color: rgba(225, 29, 72, 0.3) !important;
+}
+
+/* Nord Light Amber / Blue accents */
+[data-theme='nord-light'] .text-amber-200,
+[data-theme='nord-light'] .text-amber-300,
+[data-theme='nord-light'] .text-amber-400 {
+  color: #b45309 !important;
+}
+[data-theme='nord-light'] .text-amber-500 {
+  color: #d97706 !important;
+}
+[data-theme='nord-light'] .bg-amber-500 {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+[data-theme='nord-light'] .hover\:bg-amber-600:hover {
+  background-color: #0369a1 !important;
+}
+[data-theme='nord-light'] .bg-amber-500\/10,
+[data-theme='nord-light'] .bg-amber-500\/15,
+[data-theme='nord-light'] .bg-amber-500\/20 {
+  background-color: rgba(2, 132, 199, 0.1) !important;
+  color: #0f172a !important;
+}
+[data-theme='nord-light'] .border-amber-500,
+[data-theme='nord-light'] .border-amber-500\/20,
+[data-theme='nord-light'] .border-amber-500\/30,
+[data-theme='nord-light'] .border-amber-500\/40 {
+  border-color: rgba(2, 132, 199, 0.35) !important;
+}
+
+/* Nord Light Cyan / Blue accents */
+[data-theme='nord-light'] .text-cyan-200,
+[data-theme='nord-light'] .text-cyan-300 {
+  color: #0369a1 !important;
+}
+[data-theme='nord-light'] .text-cyan-400 {
+  color: #0284c7 !important;
+}
+[data-theme='nord-light'] .bg-cyan-500\/10,
+[data-theme='nord-light'] .bg-cyan-500\/15,
+[data-theme='nord-light'] .bg-cyan-500\/20,
+[data-theme='nord-light'] .bg-cyan-500\/25 {
+  background-color: rgba(2, 132, 199, 0.08) !important;
+}
+[data-theme='nord-light'] .border-cyan-500\/25,
+[data-theme='nord-light'] .border-cyan-500\/30,
+[data-theme='nord-light'] .border-cyan-500\/40 {
+  border-color: rgba(2, 132, 199, 0.3) !important;
+}
+
+/* Nord Light Form Controls & SVG */
+[data-theme='nord-light'] input,
+[data-theme='nord-light'] textarea,
+[data-theme='nord-light'] select {
+  color: #0f172a !important;
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+}
+[data-theme='nord-light'] input::placeholder,
+[data-theme='nord-light'] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+[data-theme='nord-light'] svg text {
+  fill: #0f172a !important;
 }
 
 /* ==========================================================================

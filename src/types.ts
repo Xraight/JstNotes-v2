@@ -125,7 +125,8 @@ export type ThemePreset =
   | 'nord'
   | 'catppuccin'
   | 'monokai'
-  | 'solarized-light';
+  | 'solarized-light'
+  | 'nord-light';
 
 export type AIProvider = 'gemini' | 'groq' | 'openai' | 'opencode';
 

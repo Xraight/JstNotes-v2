@@ -9,6 +9,7 @@ import {
   INITIAL_HIGHLIGHTS,
   INITIAL_SETTINGS,
 } from './data/initialData';
+import { SAMPLE_KNOWLEDGE_BASE } from './data/sampleKnowledgeBase';
 import {
   Note,
   PDFDocument,
@@ -188,6 +189,20 @@ export function App() {
     };
   }, [isDraggingSplit]);
 
+  // Global shortcut: Ctrl+K / Cmd+K to jump to search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setActiveView('workspace');
+        setSidebarTab('search');
+        setSidebarOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // --- Note Operations ---
   const handleUpdateNoteContent = (content: string) => {
     if (!activeNoteId) return;
@@ -223,9 +238,21 @@ export function App() {
   };
 
   const handleDeleteNote = (noteId: string) => {
-    setNotes((prev) => prev.filter((n) => n.id !== noteId && n.parentId !== noteId));
-    if (activeNoteId === noteId) {
-      const remaining = notes.filter((n) => n.id !== noteId && n.type !== 'folder');
+    // Collect all descendant ids recursively
+    const idsToDelete = new Set<string>([noteId]);
+    let added = true;
+    while (added) {
+      added = false;
+      for (const n of notes) {
+        if (n.parentId && idsToDelete.has(n.parentId) && !idsToDelete.has(n.id)) {
+          idsToDelete.add(n.id);
+          added = true;
+        }
+      }
+    }
+    setNotes((prev) => prev.filter((n) => !idsToDelete.has(n.id)));
+    if (activeNoteId && idsToDelete.has(activeNoteId)) {
+      const remaining = notes.filter((n) => !idsToDelete.has(n.id) && n.type !== 'folder');
       setActiveNoteId(remaining[0]?.id || null);
     }
   };
@@ -320,12 +347,15 @@ export function App() {
   // --- PDF Import & Delete ---
   const handleImportPdf = (file: File) => {
     const newPdfId = 'pdf-' + Math.random().toString(36).substring(2, 9);
+    const matchingNoteId = 'note-pdf-' + Math.random().toString(36).substring(2, 9);
+    const linked = activeNoteId ? [activeNoteId, matchingNoteId] : [matchingNoteId];
+
     const newPdf: PDFDocument = {
       id: newPdfId,
       title: file.name.replace(/\.[^/.]+$/, ''),
       fileName: file.name,
       pageCount: 5,
-      linkedNoteIds: activeNoteId ? [activeNoteId] : [],
+      linkedNoteIds: linked,
       createdAt: new Date().toISOString(),
       outline: [
         { id: 'sec-1', title: 'Chapter 1: Overview & Fundamentals', pageNumber: 1 },
@@ -351,7 +381,6 @@ export function App() {
     setPdfCurrentPage(1);
 
     // Create matching PDF Note in tree
-    const matchingNoteId = 'note-pdf-' + Math.random().toString(36).substring(2, 9);
     const newPdfNote: Note = {
       id: matchingNoteId,
       title: `[PDF] ${newPdf.title}`,
@@ -362,7 +391,6 @@ export function App() {
       updatedAt: new Date().toISOString(),
     };
     setNotes((prev) => [...prev, newPdfNote]);
-    newPdf.linkedNoteIds.push(matchingNoteId);
   };
 
   const handleDeletePdf = (pdfId: string) => {
@@ -603,6 +631,9 @@ export function App() {
               setFlashcards((prev) =>
                 prev.map((c) => (c.id === updated.id ? updated : c))
               );
+              setActiveFlashcardDeck((prev) =>
+                prev.map((c) => (c.id === updated.id ? updated : c))
+              );
             }}
             onBack={() => setActiveView('study-home')}
             onGenerateMore={handleGenerateFlashcardsForActiveNote}
@@ -667,7 +698,11 @@ export function App() {
         onResetSettings={() => setSettings(INITIAL_SETTINGS)}
         notes={notes}
         pdfs={pdfs}
+        highlights={highlights}
         flashcards={flashcards}
+        deepQuestions={deepQuestions}
+        concreteExamples={concreteExamples}
+        calendarEvents={calendarEvents}
         onImportData={(imported) => {
           if (imported.notes && Array.isArray(imported.notes)) setNotes(imported.notes);
           if (imported.pdfs && Array.isArray(imported.pdfs)) setPdfs(imported.pdfs);
@@ -677,6 +712,35 @@ export function App() {
           if (imported.concreteExamples && Array.isArray(imported.concreteExamples)) setConcreteExamples(imported.concreteExamples);
           if (imported.calendarEvents && Array.isArray(imported.calendarEvents)) setCalendarEvents(imported.calendarEvents);
           if (imported.settings) setSettings(imported.settings);
+        }}
+        onLoadSampleData={() => {
+          setNotes(SAMPLE_KNOWLEDGE_BASE.notes);
+          setPdfs(SAMPLE_KNOWLEDGE_BASE.pdfs);
+          setHighlights(SAMPLE_KNOWLEDGE_BASE.highlights);
+          setFlashcards(SAMPLE_KNOWLEDGE_BASE.flashcards);
+          setDeepQuestions(SAMPLE_KNOWLEDGE_BASE.deepQuestions);
+          setConcreteExamples(SAMPLE_KNOWLEDGE_BASE.concreteExamples);
+          setCalendarEvents(SAMPLE_KNOWLEDGE_BASE.calendarEvents);
+          setActiveNoteId(SAMPLE_KNOWLEDGE_BASE.notes[1]?.id || SAMPLE_KNOWLEDGE_BASE.notes[0]?.id || null);
+          setActivePdfId(SAMPLE_KNOWLEDGE_BASE.pdfs[0]?.id || null);
+        }}
+        onClearAllData={() => {
+          setNotes(INITIAL_NOTES);
+          setPdfs(INITIAL_PDFS);
+          setHighlights(INITIAL_HIGHLIGHTS);
+          setFlashcards(INITIAL_FLASHCARDS);
+          setDeepQuestions(INITIAL_DEEP_QUESTIONS);
+          setConcreteExamples(INITIAL_CONCRETE_EXAMPLES);
+          setCalendarEvents(INITIAL_CALENDAR_EVENTS);
+          setActiveNoteId(INITIAL_NOTES[1]?.id || INITIAL_NOTES[0]?.id || null);
+          setActivePdfId(null);
+          localStorage.removeItem('cognito_notes');
+          localStorage.removeItem('cognito_pdfs');
+          localStorage.removeItem('cognito_highlights');
+          localStorage.removeItem('cognito_flashcards');
+          localStorage.removeItem('cognito_deep_questions');
+          localStorage.removeItem('cognito_examples');
+          localStorage.removeItem('cognito_events');
         }}
       />
     </div>

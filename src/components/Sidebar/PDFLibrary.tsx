@@ -128,7 +128,13 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({
                         isActive ? 'text-rose-400' : 'text-slate-400 group-hover:text-rose-400'
                       }`}
                     />
-                    <span className="font-medium text-xs truncate">{pdf.title}</span>
+                    <span
+                      className={`text-xs truncate ${
+                        isActive ? 'font-semibold text-rose-200' : 'font-medium text-slate-200 group-hover:text-rose-300'
+                      }`}
+                    >
+                      {pdf.title}
+                    </span>
                   </div>
 
                   <button

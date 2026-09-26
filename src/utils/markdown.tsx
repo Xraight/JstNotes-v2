@@ -37,6 +37,8 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   let inCodeBlock = false;
   let codeBuffer: string[] = [];
   let codeLanguage = '';
+  let inMathBlock = false;
+  let mathBuffer: string[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -70,7 +72,35 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       continue;
     }
 
-    // Display / Block Math: $$...$$
+    // Multi-line Math Block handling: $$ ... $$
+    if (inMathBlock) {
+      if (line.trim().endsWith('$$')) {
+        const mathContent = line.trim().replace(/\$\$$/, '');
+        if (mathContent) mathBuffer.push(mathContent);
+        const formula = mathBuffer.join('\n').trim();
+        const html = renderLatex(formula, true);
+        elements.push(
+          <div
+            key={`math-block-${i}`}
+            className="my-3 px-4 py-3 bg-slate-900/60 border border-slate-800/80 rounded-lg text-center overflow-x-auto text-amber-200"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        );
+        mathBuffer = [];
+        inMathBlock = false;
+      } else {
+        mathBuffer.push(line);
+      }
+      continue;
+    }
+
+    if (line.trim() === '$$') {
+      inMathBlock = true;
+      mathBuffer = [];
+      continue;
+    }
+
+    // Single-line Display / Block Math: $$...$$
     if (line.trim().startsWith('$$') && line.trim().endsWith('$$') && line.trim().length > 4) {
       const math = line.trim().slice(2, -2).trim();
       const html = renderLatex(math, true);
@@ -81,6 +111,10 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
           dangerouslySetInnerHTML={{ __html: html }}
         />
       );
+      continue;
+    } else if (line.trim().startsWith('$$') && !line.trim().endsWith('$$')) {
+      inMathBlock = true;
+      mathBuffer = [line.trim().slice(2)];
       continue;
     }
 
@@ -247,6 +281,10 @@ const PdfBadge: React.FC<{
   );
 };
 
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function renderInlineText(
   text: string,
   notes: Note[],
@@ -256,14 +294,27 @@ function renderInlineText(
 ): React.ReactNode {
   // Regex to match:
   // 1. PDF badges: [PDF: Title p. X]
-  // 2. Mentions: @[Note Title] or @NoteTitle
+  // 2. Mentions: @[Note Title] or @KnownNoteTitle or @Word
   // 3. Inline LaTeX: $math$
   // 4. Bold: **text**
   // 5. Italic: *text*
   // 6. Inline code: `code`
 
   const parts: React.ReactNode[] = [];
-  const regex = /(\[PDF:\s*(.*?)\s*p\.\s*(\d+)\])|(@\[(.*?)\]|@([a-zA-Z0-9_\u00C0-\u017F\s]+(?=[,.;:!?\s]|$)))|(\$([^$\n]+)\$)|(\*\*(.*?)\*\*)|(\*(.*?)\*)|(`([^`]+)`)/g;
+  const knownTitles = notes
+    .filter((n) => n.type !== 'folder' && n.title)
+    .map((n) => n.title)
+    .sort((a, b) => b.length - a.length);
+
+  const titlePattern = knownTitles.length > 0 ? knownTitles.map(escapeRegex).join('|') : '';
+  const mentionPattern = titlePattern
+    ? `(@\\[(.*?)\\]|@(${titlePattern})|@([a-zA-Z0-9_\\u00C0-\\u017F\\-]+))`
+    : `(@\\[(.*?)\\]|@([a-zA-Z0-9_\\u00C0-\\u017F\\-]+))`;
+
+  const regex = new RegExp(
+    `(\\[PDF:\\s*(.*?)\\s*p\\.\\s*(\\d+)\\])|${mentionPattern}|(\\$([^$\\n]+)\\$)|(\\*\\*(.*?)\\*\\*)|(\\*(.*?)\\*)|(\`([^\`]+)\`)`,
+    'g'
+  );
 
   let lastIndex = 0;
   let match;
@@ -288,7 +339,7 @@ function renderInlineText(
     }
     // 2. Mention @Note
     else if (match[4]) {
-      const mentionTitle = (match[5] || match[6] || '').trim();
+      const mentionTitle = (match[5] || match[6] || match[7] || '').trim();
       parts.push(
         <MentionBadge
           key={`mention-${match.index}`}
@@ -299,8 +350,8 @@ function renderInlineText(
       );
     }
     // 3. Inline LaTeX: $math$
-    else if (match[7]) {
-      const formula = match[8];
+    else if (match[8]) {
+      const formula = match[9];
       const html = renderLatex ? renderLatex(formula, false) : formula;
       parts.push(
         <span
@@ -311,26 +362,26 @@ function renderInlineText(
       );
     }
     // 4. Bold: **text**
-    else if (match[9]) {
+    else if (match[10]) {
       parts.push(
         <strong key={`bold-${match.index}`} className="font-bold text-slate-100">
-          {match[10]}
+          {match[11]}
         </strong>
       );
     }
     // 5. Italic: *text*
-    else if (match[11]) {
+    else if (match[12]) {
       parts.push(
         <em key={`italic-${match.index}`} className="italic text-slate-300">
-          {match[12]}
+          {match[13]}
         </em>
       );
     }
     // 6. Code: `code`
-    else if (match[13]) {
+    else if (match[14]) {
       parts.push(
         <code key={`code-${match.index}`} className="px-1.5 py-0.5 rounded bg-slate-800 text-rose-300 font-mono text-xs border border-slate-700">
-          {match[14]}
+          {match[15]}
         </code>
       );
     }

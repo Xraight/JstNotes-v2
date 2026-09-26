@@ -91,15 +91,18 @@ export const SearchPanel: React.FC<SearchPanelProps> = ({ notes, onSelectNote })
 
             {/* Snippet with highlighted search query */}
             <p className="mt-1.5 text-[11px] text-slate-400 leading-relaxed font-sans line-clamp-2">
-              {snippet.split(new RegExp(`(${query})`, 'gi')).map((part, pIdx) =>
-                part.toLowerCase() === query.toLowerCase() ? (
-                  <mark key={pIdx} className="bg-cyan-500/25 text-cyan-300 px-0.5 rounded font-medium">
-                    {part}
-                  </mark>
-                ) : (
-                  part
-                )
-              )}
+              {(() => {
+                const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                return snippet.split(new RegExp(`(${escaped})`, 'gi')).map((part, pIdx) =>
+                  part.toLowerCase() === query.toLowerCase() ? (
+                    <mark key={pIdx} className="bg-cyan-500/25 text-cyan-300 px-0.5 rounded font-medium">
+                      {part}
+                    </mark>
+                  ) : (
+                    part
+                  )
+                );
+              })()}
             </p>
           </button>
         ))}

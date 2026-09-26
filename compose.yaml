@@ -1,0 +1,15 @@
+services:
+  jstnotes:
+    container_name: jstnotes-v2
+    build:
+      context: .
+      dockerfile: Containerfile
+    image: localhost/jstnotes-v2:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    restart: unless-stopped

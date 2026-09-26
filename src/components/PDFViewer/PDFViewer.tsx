@@ -77,9 +77,12 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const pageContainerRef = useRef<HTMLDivElement>(null);
 
+  // Measure unscaled height of the page sheet so layout and scrollbars track accurately
+  const [pageUnscaledHeight, setPageUnscaledHeight] = useState<number>(1050);
+
   // Zoom handlers (capped between 30% and 400%)
-  const handleZoomIn = () => setZoom((prev) => Math.min(400, prev + 15));
-  const handleZoomOut = () => setZoom((prev) => Math.max(30, prev - 15));
+  const handleZoomIn = () => setZoom((prev) => Math.min(400, prev + 20));
+  const handleZoomOut = () => setZoom((prev) => Math.max(30, prev - 20));
   const handleZoomReset = () => setZoom(100);
   const handleFitWidth = () => {
     if (containerRef.current) {
@@ -89,7 +92,23 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
     }
   };
 
-  // Ctrl + Wheel to zoom
+  useEffect(() => {
+    const el = pageContainerRef.current;
+    if (!el) return;
+
+    const updateHeight = () => {
+      if (el) {
+        setPageUnscaledHeight(Math.max(1050, el.scrollHeight || el.offsetHeight));
+      }
+    };
+    updateHeight();
+
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [currentPage, pdf]);
+
+  // Ctrl + Wheel to zoom & keyboard shortcuts (Ctrl++/Ctrl+-, Ctrl+0)
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -97,13 +116,32 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
     const onWheel = (e: WheelEvent) => {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
-        const delta = e.deltaY > 0 ? -10 : 10;
+        const delta = e.deltaY > 0 ? -15 : 15;
         setZoom((prev) => Math.max(30, Math.min(400, prev + delta)));
       }
     };
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === '=' || e.key === '+') {
+          e.preventDefault();
+          handleZoomIn();
+        } else if (e.key === '-' || e.key === '_') {
+          e.preventDefault();
+          handleZoomOut();
+        } else if (e.key === '0') {
+          e.preventDefault();
+          handleZoomReset();
+        }
+      }
+    };
+
     container.addEventListener('wheel', onWheel, { passive: false });
-    return () => container.removeEventListener('wheel', onWheel);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      container.removeEventListener('wheel', onWheel);
+      window.removeEventListener('keydown', onKeyDown);
+    };
   }, []);
 
   // Pan handlers
@@ -140,12 +178,13 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
     }
   };
 
-  // Highlight rectangle drawing
+  // Highlight rectangle drawing (mapped to unscaled page coordinate system)
   const handleMouseDownSelect = (e: React.MouseEvent) => {
     if (isPanMode || !pageContainerRef.current) return;
     const rect = pageContainerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const scale = zoom / 100;
+    const x = (e.clientX - rect.left) / scale;
+    const y = (e.clientY - rect.top) / scale;
 
     setIsSelecting(true);
     setSelectionBox({ startX: x, startY: y, currentX: x, currentY: y });
@@ -154,8 +193,9 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
   const handleMouseMoveSelect = (e: React.MouseEvent) => {
     if (!isSelecting || !selectionBox || !pageContainerRef.current) return;
     const rect = pageContainerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const scale = zoom / 100;
+    const x = (e.clientX - rect.left) / scale;
+    const y = (e.clientY - rect.top) / scale;
 
     setSelectionBox((prev) => (prev ? { ...prev, currentX: x, currentY: y } : null));
   };
@@ -167,7 +207,8 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
       return;
     }
 
-    const rect = pageContainerRef.current.getBoundingClientRect();
+    const unscaledWidth = 750;
+    const unscaledHeight = pageUnscaledHeight || 1050;
     const widthPx = Math.abs(selectionBox.currentX - selectionBox.startX);
     const heightPx = Math.abs(selectionBox.currentY - selectionBox.startY);
 
@@ -176,14 +217,17 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
       const minX = Math.min(selectionBox.startX, selectionBox.currentX);
       const minY = Math.min(selectionBox.startY, selectionBox.currentY);
 
-      const percentX = (minX / rect.width) * 100;
-      const percentY = (minY / rect.height) * 100;
-      const percentW = (widthPx / rect.width) * 100;
-      const percentH = (heightPx / rect.height) * 100;
+      const percentX = (minX / unscaledWidth) * 100;
+      const percentY = (minY / unscaledHeight) * 100;
+      const percentW = (widthPx / unscaledWidth) * 100;
+      const percentH = (heightPx / unscaledHeight) * 100;
 
-      // Extract text from page or prompt
+      // Extract user's selected text if available, or excerpt from page
+      const userSelected = window.getSelection()?.toString()?.trim();
       const pageData = pdf.pagesData?.find((p) => p.pageNumber === currentPage);
-      const sampleText = pageData
+      const sampleText = userSelected && userSelected.length > 2
+        ? userSelected
+        : pageData
         ? pageData.contentText.slice(0, 180) + '...'
         : `Excerpt from ${pdf.title}, p. ${currentPage}`;
 
@@ -208,6 +252,16 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
     setIsSelecting(false);
     setSelectionBox(null);
   };
+
+  // Ensure mouse release outside page sheet ends drag selection cleanly
+  useEffect(() => {
+    if (!isSelecting) return;
+    const handleWindowMouseUp = () => {
+      handleMouseUpSelect();
+    };
+    window.addEventListener('mouseup', handleWindowMouseUp);
+    return () => window.removeEventListener('mouseup', handleWindowMouseUp);
+  }, [isSelecting, selectionBox, pdf, currentPage, highlightColor]);
 
   // Get current page content
   const pageData = pdf?.pagesData?.find((p) => p.pageNumber === currentPage);
@@ -295,20 +349,26 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
             type="button"
             id="pdf-zoom-out"
             onClick={handleZoomOut}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200"
-            title="Zoom Out (Ctrl+Scroll Down)"
+            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 cursor-pointer"
+            title="Zoom Out (Ctrl+-)"
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
-          <span className="w-12 text-center font-mono text-[11px] font-medium text-slate-200">
+          <button
+            type="button"
+            id="pdf-zoom-percentage"
+            onClick={handleZoomReset}
+            className="w-12 text-center font-mono text-[11px] font-medium text-slate-200 hover:text-amber-400 cursor-pointer"
+            title="Current Zoom (Click to reset to 100%)"
+          >
             {zoom}%
-          </span>
+          </button>
           <button
             type="button"
             id="pdf-zoom-in"
             onClick={handleZoomIn}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200"
-            title="Zoom In (Ctrl+Scroll Up)"
+            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 cursor-pointer"
+            title="Zoom In (Ctrl++)"
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
@@ -317,8 +377,8 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
             type="button"
             id="pdf-zoom-reset"
             onClick={handleZoomReset}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200"
-            title="Reset Zoom (100%)"
+            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 cursor-pointer"
+            title="Reset Zoom (100%, Ctrl+0)"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
@@ -326,7 +386,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
             type="button"
             id="pdf-fit-width"
             onClick={handleFitWidth}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200"
+            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-200 cursor-pointer"
             title="Fit Width"
           >
             <Maximize2 className="w-3.5 h-3.5" />
@@ -475,24 +535,35 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
         onMouseDown={handleMouseDownPan}
         onMouseMove={handleMouseMovePan}
         onMouseUp={handleMouseUpPan}
-        className={`flex-1 overflow-auto p-6 flex justify-center items-start ${
+        className={`flex-1 overflow-auto p-6 flex ${
           isPanMode ? (isPanning ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-crosshair'
         }`}
       >
-        {/* PDF Page Sheet */}
+        {/* Scaled bounding wrapper to preserve viewport scrollbars and centering */}
         <div
-          ref={pageContainerRef}
-          id="pdf-page-sheet"
-          onMouseDown={handleMouseDownSelect}
-          onMouseMove={handleMouseMoveSelect}
-          onMouseUp={handleMouseUpSelect}
+          id="pdf-page-scale-wrapper"
+          className="m-auto flex-shrink-0 relative transition-transform duration-75"
           style={{
             width: `${(750 * zoom) / 100}px`,
-            minHeight: `${(1000 * zoom) / 100}px`,
-            transformOrigin: 'top center',
+            minHeight: `${(pageUnscaledHeight * zoom) / 100}px`,
+            height: `${(pageUnscaledHeight * zoom) / 100}px`,
           }}
-          className="relative bg-white text-slate-900 rounded-sm shadow-2xl p-10 border border-slate-300 select-text transition-all duration-75"
         >
+          {/* PDF Page Sheet (Fixed 750px coordinate system, scaled visually via CSS transform) */}
+          <div
+            ref={pageContainerRef}
+            id="pdf-page-sheet"
+            onMouseDown={handleMouseDownSelect}
+            onMouseMove={handleMouseMoveSelect}
+            onMouseUp={handleMouseUpSelect}
+            style={{
+              width: '750px',
+              minHeight: '1050px',
+              transform: `scale(${zoom / 100})`,
+              transformOrigin: 'top left',
+            }}
+            className="absolute top-0 left-0 bg-white text-slate-900 rounded-sm shadow-2xl p-10 border border-slate-300 select-text"
+          >
           {/* Header watermark */}
           <div className="flex justify-between items-center text-[10px] text-slate-400 border-b border-slate-200 pb-2 mb-6 font-serif">
             <span className="truncate max-w-[380px]">{pdf.title}</span>
@@ -509,7 +580,8 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
               {pageData.contentText.split('\n\n').map((paragraph, pIdx) => {
                 // If search query active, highlight occurrences
                 if (searchQuery.trim()) {
-                  const parts = paragraph.split(new RegExp(`(${searchQuery})`, 'gi'));
+                  const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  const parts = paragraph.split(new RegExp(`(${escapedQuery})`, 'gi'));
                   return (
                     <p key={pIdx} className="text-justify leading-7">
                       {parts.map((part, partIdx) =>
@@ -654,5 +726,6 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
         </div>
       </div>
     </div>
+  </div>
   );
 };

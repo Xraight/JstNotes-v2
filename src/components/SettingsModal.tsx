@@ -21,11 +21,17 @@ import {
   Cpu,
   RefreshCw,
   AlertCircle,
+  BookOpen,
+  Trash2,
 } from 'lucide-react';
 import {
   Note,
   PDFDocument,
+  PDFHighlight,
   Flashcard,
+  DeepQuestion,
+  ConcreteExample,
+  CalendarEvent,
   AppSettings,
   ThemePreset,
   AIProvider,
@@ -40,8 +46,14 @@ interface SettingsModalProps {
   onResetSettings: () => void;
   notes: Note[];
   pdfs: PDFDocument[];
+  highlights?: PDFHighlight[];
   flashcards: Flashcard[];
+  deepQuestions?: DeepQuestion[];
+  concreteExamples?: ConcreteExample[];
+  calendarEvents?: CalendarEvent[];
   onImportData: (importedData: any) => void;
+  onLoadSampleData?: () => void;
+  onClearAllData?: () => void;
 }
 
 interface ThemeOption {
@@ -116,6 +128,16 @@ const THEME_OPTIONS: ThemeOption[] = [
     accentHex: '#b58900',
     textColorHex: '#073642',
   },
+  {
+    id: 'nord-light',
+    name: 'Nord Snow (Clean Light)',
+    description: 'Crisp arctic daylight palette with frosty blue accents and pure paper contrast',
+    type: 'light',
+    bgHex: '#f8fafc',
+    panelHex: '#ffffff',
+    accentHex: '#0284c7',
+    textColorHex: '#0f172a',
+  },
 ];
 
 const FONT_OPTIONS = [
@@ -143,8 +165,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onResetSettings,
   notes,
   pdfs,
+  highlights,
   flashcards,
+  deepQuestions,
+  concreteExamples,
+  calendarEvents,
   onImportData,
+  onLoadSampleData,
+  onClearAllData,
 }) => {
   const [activeTab, setActiveTab] = useState<'themes' | 'editor' | 'ai' | 'css' | 'shortcuts' | 'backup'>('themes');
   const [importStatus, setImportStatus] = useState<string | null>(null);
@@ -216,7 +244,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     const data = {
       notes,
       pdfs,
+      highlights: highlights || [],
       flashcards,
+      deepQuestions: deepQuestions || [],
+      concreteExamples: concreteExamples || [],
+      calendarEvents: calendarEvents || [],
       settings,
       exportDate: new Date().toISOString(),
       version: '1.0.0',
@@ -250,6 +282,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       }
     };
     reader.readAsText(file);
+    e.target.value = '';
   };
 
   return (
@@ -953,6 +986,58 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   Reset Settings to Defaults
                 </button>
               </div>
+
+              {/* Load Sample Knowledge Base */}
+              {onLoadSampleData && (
+                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-500/30 space-y-3">
+                  <span className="font-semibold text-amber-300 flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-amber-400" />
+                    <span>Load Sample Knowledge Base (Demo Library)</span>
+                  </span>
+                  <p className="text-slate-400 text-[11px]">
+                    Populate your workspace with a complete academic demonstration library containing cognitive neuroscience notes, quantum computing models, simulated PDFs, and SM-2 flashcard decks.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm('Load demo knowledge base? This will populate sample notes, PDFs, and flashcard decks into your workspace.')) {
+                        onLoadSampleData();
+                        setImportStatus('Sample knowledge base loaded successfully!');
+                        setTimeout(() => setImportStatus(null), 3000);
+                      }
+                    }}
+                    className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    Load Demo Library
+                  </button>
+                </div>
+              )}
+
+              {/* Clear All Data */}
+              {onClearAllData && (
+                <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-500/40 space-y-3">
+                  <span className="font-semibold text-rose-300 flex items-center gap-2">
+                    <Trash2 className="w-4 h-4 text-rose-400" />
+                    <span>Clear Workspace (Fresh Start)</span>
+                  </span>
+                  <p className="text-slate-400 text-[11px]">
+                    Permanently delete all custom notes, PDFs, and flashcards, returning to a pristine clean workspace with only the Quickstart guide.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm('WARNING: Are you sure you want to clear all notes and PDFs? This cannot be undone unless you have a backup.')) {
+                        onClearAllData();
+                        setImportStatus('Workspace reset to clean slate.');
+                        setTimeout(() => setImportStatus(null), 3000);
+                      }
+                    }}
+                    className="px-3.5 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    Clear All Workspace Data
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

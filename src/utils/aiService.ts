@@ -343,16 +343,10 @@ export async function streamFeynmanEvaluation({
   }
 }
 
-// Wrapper for streaming Feynman Technique
-export async function streamFeynmanTechnique(
-  concept: string,
-  explanation: string,
-  onChunk: (chunk: string) => void,
-  onError?: (err: any) => void
-): Promise<void> {
-  const defaultSettings: AppSettings = {
+export function getStoredSettings(): AppSettings {
+  const fallbackSettings: AppSettings = {
     theme: 'midnight',
-    fontFamily: 'Inter',
+    fontFamily: 'JetBrains Mono',
     fontSize: 14,
     lineNumbers: true,
     livePreviewSplit: true,
@@ -363,12 +357,36 @@ export async function streamFeynmanTechnique(
     language: 'auto',
   };
 
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const saved = localStorage.getItem('cognito_settings');
+      if (saved) {
+        return { ...fallbackSettings, ...JSON.parse(saved) };
+      }
+    } catch (e) {}
+  }
+  return fallbackSettings;
+}
+
+// Wrapper for streaming Feynman Technique
+export async function streamFeynmanTechnique(
+  concept: string,
+  explanation: string,
+  onChunk: (chunk: string) => void,
+  onError?: (err: any) => void,
+  customSettings?: AppSettings
+): Promise<void> {
+  const settings = customSettings || getStoredSettings();
+
   return streamFeynmanEvaluation({
     concept,
     userExplanation: explanation,
-    settings: defaultSettings,
+    settings,
     onChunk,
-    onError: (err) => onError?.(err),
+    onError: (err) => {
+      onChunk(`\n\n⚠️ **Notice:** ${err}\n`);
+      onError?.(err);
+    },
     onComplete: () => {},
   });
 }
@@ -376,7 +394,8 @@ export async function streamFeynmanTechnique(
 // Wrapper for generating flashcards from title and content
 export async function generateFlashcards(
   title: string,
-  content: string
+  content: string,
+  customSettings?: AppSettings
 ): Promise<Flashcard[]> {
   const note: Note = {
     id: 'temp-' + Math.random().toString(36).substring(2, 9),
@@ -388,22 +407,11 @@ export async function generateFlashcards(
     updatedAt: new Date().toISOString(),
   };
 
-  const defaultSettings: AppSettings = {
-    theme: 'midnight',
-    fontFamily: 'Inter',
-    fontSize: 14,
-    lineNumbers: true,
-    livePreviewSplit: true,
-    defaultHighlightColor: '#facc15',
-    aiProvider: 'gemini',
-    aiModel: 'gemini-3.8-flash',
-    customCss: '',
-    language: 'auto',
-  };
+  const settings = customSettings || getStoredSettings();
 
   const generated = await generateFlashcardsWithAI({
     note,
-    settings: defaultSettings,
+    settings,
   });
 
   const today = new Date().toISOString().split('T')[0];
@@ -427,7 +435,8 @@ export async function generateFlashcards(
 // Wrapper for generating deep questions
 export async function generateDeepQuestions(
   title: string,
-  content: string
+  content: string,
+  customSettings?: AppSettings
 ): Promise<DeepQuestion[]> {
   const note: Note = {
     id: 'temp-' + Math.random().toString(36).substring(2, 9),
@@ -439,22 +448,11 @@ export async function generateDeepQuestions(
     updatedAt: new Date().toISOString(),
   };
 
-  const defaultSettings: AppSettings = {
-    theme: 'midnight',
-    fontFamily: 'Inter',
-    fontSize: 14,
-    lineNumbers: true,
-    livePreviewSplit: true,
-    defaultHighlightColor: '#facc15',
-    aiProvider: 'gemini',
-    aiModel: 'gemini-3.8-flash',
-    customCss: '',
-    language: 'auto',
-  };
+  const settings = customSettings || getStoredSettings();
 
   const generated = await generateDeepQuestionsWithAI({
     note,
-    settings: defaultSettings,
+    settings,
   });
 
   return generated.map((q) => ({
@@ -466,7 +464,8 @@ export async function generateDeepQuestions(
 // Wrapper for generating concrete examples
 export async function generateConcreteExamples(
   title: string,
-  content: string
+  content: string,
+  customSettings?: AppSettings
 ): Promise<ConcreteExample[]> {
   const note: Note = {
     id: 'temp-' + Math.random().toString(36).substring(2, 9),
@@ -478,22 +477,11 @@ export async function generateConcreteExamples(
     updatedAt: new Date().toISOString(),
   };
 
-  const defaultSettings: AppSettings = {
-    theme: 'midnight',
-    fontFamily: 'Inter',
-    fontSize: 14,
-    lineNumbers: true,
-    livePreviewSplit: true,
-    defaultHighlightColor: '#facc15',
-    aiProvider: 'gemini',
-    aiModel: 'gemini-3.8-flash',
-    customCss: '',
-    language: 'auto',
-  };
+  const settings = customSettings || getStoredSettings();
 
   const generated = await generateConcreteExamplesWithAI({
     note,
-    settings: defaultSettings,
+    settings,
   });
 
   return generated.map((ex) => ({
@@ -507,15 +495,19 @@ export async function generateConcreteExamples(
 export async function evaluateActiveRecall(
   question: string,
   userAnswer: string,
-  keyPoints?: string[]
+  keyPoints?: string[],
+  customSettings?: AppSettings
 ): Promise<{ score: number; feedback: string; misconceptions?: string[] }> {
+  const settings = customSettings || getStoredSettings();
+
   try {
     const res = await fetch('/api/ai/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        provider: 'gemini',
-        model: 'gemini-3.8-flash',
+        provider: settings.aiProvider,
+        model: settings.aiModel,
+        apiKey: getActiveApiKey(settings),
         prompt: `You are an expert academic examiner evaluating a student's answer.
 Question: "${question}"
 Student's Answer: "${userAnswer}"

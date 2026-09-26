@@ -1,0 +1,26 @@
+[Unit]
+Description=JstNotes (Cognito IDE) Production Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/jstnotes
+Environment=NODE_ENV=production
+Environment=PORT=3000
+EnvironmentFile=-/etc/jstnotes.env
+ExecStart=/usr/bin/node dist/server.cjs
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+# Security sandbox settings
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -29,13 +29,14 @@ export const MiniCalendar: React.FC<MiniCalendarProps> = ({
   onDeleteEvent,
   activeNote,
 }) => {
-  const [currentYear, setCurrentYear] = useState(2026);
-  const [currentMonth, setCurrentMonth] = useState(8); // 8 = September (0-indexed)
+  const now = new Date();
+  const [currentYear, setCurrentYear] = useState(now.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(now.getMonth());
   const [showAddForm, setShowAddForm] = useState(false);
 
   // New event form state
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState('2026-09-12');
+  const [date, setDate] = useState(now.toISOString().split('T')[0]);
   const [time, setTime] = useState('09:00');
   const [type, setType] = useState<'exam' | 'assignment' | 'review' | 'lecture'>('exam');
   const [priority, setPriority] = useState<'high' | 'medium' | 'low'>('high');
@@ -150,7 +151,7 @@ export const MiniCalendar: React.FC<MiniCalendarProps> = ({
               const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
               const dayEvents = events.filter((e) => e.date === dateStr);
               const hasExam = dayEvents.some((e) => e.type === 'exam');
-              const isToday = dateStr === '2026-09-10';
+              const isToday = dateStr === now.toISOString().split('T')[0];
 
               return (
                 <div
