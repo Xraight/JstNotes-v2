@@ -4,16 +4,20 @@
   "description": "Cognito IDE / JstNotes - Technical note-taking workstation with Markdown, LaTeX, PDF integration, SM-2 flashcards, and D3 knowledge graph",
   "private": true,
   "license": "MIT",
-  "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "tsx server.ts",
     "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
+    "clean": "rm -rf dist release",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck && npm run build"
+    "test": "npm run typecheck && npm run build",
+    "electron:dev": "NODE_ENV=development electron .",
+    "electron:build": "npm run build && electron-builder",
+    "electron:dist:linux": "npm run build && electron-builder --linux AppImage",
+    "electron:dist:win": "npm run build && electron-builder --win nsis portable"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -34,13 +38,45 @@
     "vite": "^6.2.3"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3",
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.3",
-    "@types/express": "^4.17.21"
+    "vite": "^6.2.3"
+  },
+  "build": {
+    "appId": "com.jstnotes.app",
+    "productName": "JstNotes",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Education",
+      "maintainer": "JstNotes Contributors",
+      "synopsis": "Cognito IDE - Technical Note-Taking & Active Recall Workstation"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
